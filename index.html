@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>منيو مخابز اليحي-معجنات-بيتزا-فلافل</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="img/New folder/logo.png" />
+  <!-- خط Tajawal -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold-brown: #d3a273;
+      --deep-maroon: #5c2d35;
+      --mid-maroon: #5c2d35;
+      --white: #ffffff;
+
+      --base-size: 20px;
+      --tab-size: 22px;
+      --h2-size: 26px;
+      --name-price-size: 26px;
+      --desc-curr-size: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { font-family:'Tajawal',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif !important; }
+    *,*::before,*::after { font-family: inherit !important; }
+    button,.tab,a,input,select,textarea{ font-family:'Tajawal',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif !important; }
+
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--gold-brown);
+      color: var(--deep-maroon);
+      font-size: var(--base-size);
+      line-height: 1.8;
+      font-weight: 700;
+      padding-bottom: 60px;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: fixed; top: 0; right: 0; left: 0;
+      background: var(--mid-maroon); color: #fff;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 5px 10px; z-index: 2000;
+    }
+    .navbar .logo { font-size: 22px; font-weight: 800; }
+    .navbar .menu-btn { font-size: 22px; cursor: pointer; background: none; border: none; color: #fff; }
+
+    /* Overlay */
+    .overlay {
+      height: 0; width: 100%; position: fixed; top: 0; right: 0; left: 0;
+      background-color: rgba(76, 36, 36, 0.95); overflow: hidden; transition: height 0.5s ease; z-index: 3000;
+    }
+    .overlay-content { position: absolute; top: 25%; left: 0; right: 0; text-align: center; }
+    .overlay-content a { padding: 12px; text-decoration: none; font-size: 24px; color: #fff; display: block; transition: 0.3s; }
+    .overlay-content a:hover { background: var(--gold-brown); color: var(--deep-maroon); }
+    .overlay .closebtn { position: absolute; top: 20px; left: 30px; font-size: 36px; color: #fff; cursor: pointer; }
+
+    /* Banner */
+    .hero-container {
+      width: calc(100% - 10px);
+      margin: 70px auto 0;
+      overflow: hidden;
+      border-radius: 12px;
+      max-width: 1200px;
+      background: var(--white);
+    }
+    .hero-image { width: 100%; height: auto; display: block; object-fit: contain; }
+
+    /* Tabs */
+    .tabs {
+      position: sticky; top: 60px; z-index: 1000;
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 1px; padding: 1px; background: var(--gold-brown);
+    }
+    .tab {
+      background: transparent; color: var(--white); cursor: pointer;
+      font-weight: 700; font-size: var(--tab-size);
+      padding: px px; border: none; border-radius: 8px;
+      transition: background-color 0.2s ease, color 0.2s ease; white-space: nowrap;
+    }
+   .tab.active { background: var(--mid-maroon); color: var(--white); }
+    
+    /* Sections */
+    .menu-section {
+      margin: 20px auto; padding: 16px;
+      background: var(--gold-brown); border-radius: 12px; max-width: 1100px;
+    }
+    .menu-section h2 {
+      margin: 0 0 10px 0; font-size: var(--h2-size); color: var(--white); font-weight: 800;
+    }
+
+    /* Items */
+    .item {
+      background: var(--gold-brown); margin-bottom: 12px; padding: 14px;
+      border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.18); cursor: pointer;
+    }
+    .item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px 12px; flex-wrap: wrap; }
+
+    .item-name, .item-price { font-size: calc(var(--name-price-size) * 0.8); font-weight: 800; }
+    .item-price { color: var(--mid-maroon); }
+    .item-desc, .item-currency { font-size: calc(var(--desc-curr-size) * 0.8); font-weight: 700; }
+    .item-desc { color: var(--deep-maroon); margin-top: 6px; }
+    .item-currency { color: var(--white); }
+
+    /* Product image collapse + full display */
+    .item-image { overflow: hidden; max-height: 0; transition: max-height 0.5s ease; }
+    .item-image img { width: 100%; height: auto; object-fit: contain; display: block; background: var(--white); border-radius: 10px; margin-top: 10px; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      :root { --base-size: 18px; --tab-size: 17px; --h2-size: 22px; --name-price-size: 22px; --desc-curr-size: 18px; }
+    }
+    @media (max-width: 480px) {
+      :root { --base-size: 16px; --tab-size: 14px; --h2-size: 20px; --name-price-size: 20px; --desc-curr-size: 16px; }
+      .navbar { padding: 10px 16px; }
+      .hero-container { margin-top: 64px; }
+      .tabs { gap: 6px; padding: 8px; }
+      .tab { padding: 6px 10px; }
+      .menu-section { padding: 12px; }
+    }
+    .img-currency
+    {
+      width: 24px;
+      height: 18px;
+      margin-right: 10px
+    }
+  </style>
+</head>
+<body>
+
+
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">القائمة</div>
+    <button class="menu-btn" onclick="openOverlay()">☰</button>
+  </div>
+
+  <!-- Overlay -->
+  <div id="overlayMenu" class="overlay" aria-hidden="true">
+    <span class="closebtn" onclick="closeOverlay()">×</span>
+    <div class="overlay-content">
+      <a href="index.html" onclick="closeOverlay()">الرئيسية</a>
+      <a href="NEWS.HTML" onclick="closeOverlay()">جديدنا</a>
+      <a href="bra.html" onclick="closeOverlay()">تواصل معنا</a>
+    </div>
+  </div>
+
+  <!-- Banner -->
+  <div class="hero-container" id="top">
+    <img src="./img/landing-page1hero.jpeg" alt="منيو Alyahya" class="hero-image">
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-target="pizza">بيتزا |</button>
+    <button class="tab" data-target="pastry">معجنات |</button>
+    <button class="tab" data-target="falafel">صحن فلافل |</button>
+    <button class="tab" data-target="appetizers">ساندويشات |</button>
+    <button class="tab" data-target="adds">اضافات</button>
+
+  </div>
+
+  <!-- بيتزا -->
+  <section id="pizza" class="menu-section">
+    <h2>بيتزا</h2>
+
+    <!-- كبير -->
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا لحم كبير</div><div class="item-desc">عجينة البيتزا، لحم، جبن، خضار، صوص البيتزا </div></div><div><div class="item-price">25.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا لحم كبير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا دجاج كبير</div><div class="item-desc">عجينةالبيتزا،دجاج، جبن، خضار، صوص البيتزا</div></div><div><div class="item-price">25.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا دجاج كبير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا مشكل كبير</div><div class="item-desc">تشكيلة لحوم وخضار بطابع غني</div></div><div><div class="item-price">29.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا مشكل كبير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا ايطالي كبير</div><div class="item-desc">عجينة البيتزا،جبن،خضار،صوص البيتزا</div></div><div><div class="item-price">29.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا ايطالي كبير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا بيبروني كبير</div><div class="item-desc">شرائح بيبروني،جبن موزاريلا،صوص البيتزا </div></div><div><div class="item-price">28.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا بيبروني كبير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا فلافل كبير</div><div class="item-desc">فلافل،بطاطس،جبن سائل،خضار،جبن موزاريلا</div></div><div><div class="item-price">25.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا فلافل كبير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا خضار كبير</div><div class="item-desc">فلفل، زيتون، خضار مع جبن </div></div><div><div class="item-price">18.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا خضار كبير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا جبن كبير</div><div class="item-desc">جبنة موزاريلا غنية على عجينة وصوص البيتزا</div></div><div><div class="item-price">25.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا جبن كبير"></div></div>
+
+    <!-- صغير -->
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا لحم صغير</div><div class="item-desc">عجينة البيتزا، لحم، جبن، خضار، صوص البيتزا</div></div><div><div class="item-price">14.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا لحم صغير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا دجاج صغير</div><div class="item-desc">عجينة البيتزا، دجاج، جبن، خضار، صوص البيتزا</div></div><div><div class="item-price">14.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا دجاج صغير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا مشكل صغير</div><div class="item-desc">تشكيلة لحوم وخضار بحجم صغير</div></div><div><div class="item-price">15.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا مشكل صغير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا ايطالي صغير</div><div class="item-desc">عجينة البيتزا،جبن،خضار،صوص البيتزا</div></div><div><div class="item-price">15.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا ايطالي صغير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا بيبروني صغير</div><div class="item-desc">شرائح بيبروني، جبن موزاريلا،صوص البيتزا</div></div><div><div class="item-price">14.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا بيبروني صغير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا فلافل صغير</div><div class="item-desc">فلافل،بطاطس،جبن سائل،خضار،جبن موزاريلا</div></div><div><div class="item-price">18.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا فلافل صغير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا خضار صغير</div><div class="item-desc">فلفل، زيتون، خضار مع جبن</div></div><div><div class="item-price">11.50</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا خضار صغير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بيتزا جبن صغير</div><div class="item-desc">جبنة موزاريلا غنية على عجينة وصوص البيتزا</div></div><div><div class="item-price">11.50</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بيتزا جبن صغير"></div></div>
+  </section>
+
+  <!-- معجنات -->
+  <section id="pastry" class="menu-section">
+    <h2>معجنات</h2>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">لحم بالبيض</div><div class="item-desc">فطيرة لحم متبل مع بيض ،عجين</div></div><div><div class="item-price">7.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="لحم بالبيض"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">لحم بالعجين</div><div class="item-desc">عجينة  مغطاة بلحم متبل</div></div><div><div class="item-price">6.75</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="لحم بالعجين"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">لحم بالجبن</div><div class="item-desc">لحم متبل مع طبقة جبن شهية</div></div><div><div class="item-price">7.75</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="لحم بالجبن"></div></div>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">دجاج بالعجين</div><div class="item-desc">عجينة رقيقة بحشوة دجاج متبل</div></div><div><div class="item-price">6.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="دجاج بالعجين"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">دجاج بالجبن</div><div class="item-desc">دجاج طري مع جبن موزريلا</div></div><div><div class="item-price">7.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="دجاج بالجبن"></div></div>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">فاهيتا دجاج</div><div class="item-desc">دجاج  بتوابل فاهيتا وخضار</div></div><div><div class="item-price">7.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="فاهيتا دجاج"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">فاهيتا دجاج جبن</div><div class="item-desc">فاهيتا دجاج مع إضافة جبن</div></div><div><div class="item-price">8.50</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="فاهيتا دجاج جبن"></div></div>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">بطاطس</div><div class="item-desc">بطاطس مهروسة مع عجينة </div></div><div><div class="item-price">5.75</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بطاطس"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بطاطس بالجبن</div><div class="item-desc">بطاطس مهروسة مع جبن  </div></div><div><div class="item-price">7.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بطاطس بالجبن"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">بطاطس باللبنة</div><div class="item-desc">بطاطس مع لبنة ناعمة ومتزنة</div></div><div><div class="item-price">7.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="بطاطس باللبنة"></div></div>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">سبانخ</div><div class="item-desc">سبانخ طازجة بتتبيلة خفيفة مع عجين </div></div><div><div class="item-price">4.60</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="سبانخ"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">سبانخ بالجبن</div><div class="item-desc">سبانخ  مع جبن أبيض </div></div><div><div class="item-price">6.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="سبانخ بالجبن"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">سبانخ باللبنة</div><div class="item-desc">سبانخ مع لبنة بطابع شرقي</div></div><div><div class="item-price">6.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="سبانخ باللبنة"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">سبانخ مشكل</div><div class="item-desc">خليط سبانخ مع إضافات متنوعة</div></div><div><div class="item-price">7.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="سبانخ مشكل"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">سبانخ لحم</div><div class="item-desc">سبانخ مع لحم متبل</div></div><div><div class="item-price">7.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="سبانخ لحم"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">سبانخ بالبيض</div><div class="item-desc">سبانخ مع بيض لمذاق غني</div></div><div><div class="item-price">6.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="سبانخ بالبيض"></div></div>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">جبن</div><div class="item-desc">جبن أبيض ناعم مع عجينة </div></div><div><div class="item-price">5.75</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="جبن"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">جبن بالبيض</div><div class="item-desc">جبن أبيض مع بيض للمذاق الكلاسيكي</div></div><div><div class="item-price">7.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="جبن بالبيض"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">جبن خضار</div><div class="item-desc">جبن مع خضار طازجة خفيفة</div></div><div><div class="item-price">7.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="جبن خضار"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">جبن بالزيتون</div><div class="item-desc">جبن أبيض مع زيتون شرائح</div></div><div><div class="item-price">6.50</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="جبن بالزيتون"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">جبن بالزعتر</div><div class="item-desc">جبن مع زعتر بلدي  </div></div><div><div class="item-price">6.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="جبن بالزعتر"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">جبن بالعسل</div><div class="item-desc"> عجين مع جبن أبيض مع لمسة عسل</div></div><div><div class="item-price">6.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="جبن بالعسل"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">جبن عكاوي</div><div class="item-desc">جبن عكاوي بطعم شرقي أصيل</div></div><div><div class="item-price">7.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="جبن عكاوي"></div></div>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">عش البلبل</div><div class="item-desc"></div></div><div><div class="item-price">7.50</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="عش البلبل"></div></div>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">جبن سائل</div><div class="item-desc">جبن سائل كريمي بإضافة خفيفة</div></div><div><div class="item-price">7.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="جبن سائل"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">جبن سائل بالزعتر</div><div class="item-desc">جبن سائل مع زعتر </div></div><div><div class="item-price">7.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="جبن سائل بالزعتر"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">جبن سائل بالفستق والعسل</div><div class="item-desc"></div></div><div><div class="item-price">10.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="جبن سائل بالفستق والعسل"></div></div>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">لبنة</div><div class="item-desc">لبنة ناعمة بطعم متزن</div></div><div><div class="item-price">5.50</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="لبنة"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">لبنة باللحم</div><div class="item-desc">لبنة مع لحم متبل</div></div><div><div class="item-price">7.50</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="لبنة باللحم"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">لبنة بالدجاح</div><div class="item-desc">لبنة مع دجاج طري</div></div><div><div class="item-price">7.50</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="لبنة بالدجاج"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">لبنة بالجبن</div><div class="item-desc">لبنة ممزوجة بجبن أبيض</div></div><div><div class="item-price">7.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="لبنة بالجبن"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">لبنة بالخضار</div><div class="item-desc">لبنة مع خضار مشكلة طازجة</div></div><div><div class="item-price">7.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="لبنة بالخضار"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">لبنة بالزيتون</div><div class="item-desc">لبنة مع زيتون شرائح</div></div><div><div class="item-price">6.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="لبنة بالزيتون"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">لبنة بالعسل</div><div class="item-desc">لبنة بطابع حلو خفيف بالعسل</div></div><div><div class="item-price">6.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="لبنة بالعسل"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">لبنة بالزعتر</div><div class="item-desc">لبنة ممزوجة بزعتر بلدي</div></div><div><div class="item-price">6.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="لبنة بالزعتر"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">لبنة مشكل</div><div class="item-desc">لبنة مع إضافات مشكلة</div></div><div><div class="item-price">7.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="لبنة مشكل"></div></div>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">زعتر</div><div class="item-desc">زعتر بلدي مع زيت زيتون</div></div><div><div class="item-price">2.50</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="زعتر"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">زعتر بالخضار</div><div class="item-desc">زعتر مع خضار مقطعة طازجة</div></div><div><div class="item-price">4.60</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="زعتر بالخضار"></div></div>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">محمرة</div><div class="item-desc"></div></div><div><div class="item-price">5.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="محمرة"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">محمرة بالجبن</div><div class="item-desc">محمرة مع جبن أبيض لإضافة كريمية</div></div><div><div class="item-price">6.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="محمرة بالجبن"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">فلافل</div><div class="item-desc"></div></div><div><div class="item-price">4.60</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="فلافل"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">فلافل بالجبن</div><div class="item-desc">فلافل مع إضافة جبن أبيض</div></div><div><div class="item-price">6.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="فلافل بالجبن"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">فلافل باللبنة</div><div class="item-desc">فلافل مع لبنة كريمية</div></div><div><div class="item-price">6.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="فلافل باللبنة"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">فلافل مشكل</div><div class="item-desc">تشكيلة فلافل مع إضافات متنوعة</div></div><div><div class="item-price">7.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="فلافل مشكل"></div></div>
+
+  </section>
+
+  <!-- فلافل -->
+  <section id="falafel" class="menu-section">
+    <h2>صحن فلافل</h2>
+
+
+
+    <div class="item"><div class="item-header"><div><div class="item-name">صحن مشكل</div><div class="item-desc">طبق  كبير بتشكيلة أصناف</div></div><div><div class="item-price">80.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="صحن مشكل"></div></div>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">صحن فلافل كبير</div><div class="item-desc"></div></div><div><div class="item-price">23.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="صحن فلافل كبير"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">صحن فلافل وسط</div><div class="item-desc"></div></div><div><div class="item-price">18.25</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="صحن فلافل وسط"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">صحن فلافل صغير</div><div class="item-desc"></div></div><div><div class="item-price">11.50</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="صحن فلافل صغير"></div></div>
+
+
+  </section>
+
+  <!-- ساندويشات -->
+  <section id="appetizers" class="menu-section">
+    <h2>ساندويشات</h2>
+
+        <div class="item"><div class="item-header"><div><div class="item-name">فلافل مشكل</div><div class="item-desc">ساندويش فلافل بتشكيلة إضافات</div></div><div><div class="item-price">5.75</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="فلافل مشكل"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">فلافــل عادي</div><div class="item-desc">ساندويتش فلافل كلاسيكي</div></div><div><div class="item-price">4.60</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="فلافل عادي"></div></div>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">فلافل مشكل بر</div><div class="item-desc">ساندويش خبز بر بتشكيلة فلافل</div></div><div><div class="item-price">5.75</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="فلافل مشكل بر"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">فلافــل عادي بر</div><div class="item-desc">ساندويش خبز بر بالفلافل</div></div><div><div class="item-price">4.60</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="فلافل عادي بر"></div></div>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">فلافــل بخبز الصاج</div><div class="item-desc">رول صاج محشو فلافل وخضار</div></div><div><div class="item-price">7.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="فلافل بخبز الصاج"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">فلافل بخبز البطاطس</div><div class="item-desc">خبز البطاطس الطري مع فلافل</div></div><div><div class="item-price">7.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="فلافل بخبز البطاطس"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">فلافل بخبز الشمندر</div><div class="item-desc">خبز شمندر بنكهة مميزة مع فلافل</div></div><div><div class="item-price">7.00</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="فلافل بخبز الشمندر"></div></div>
+  </section>
+   <section id="adds" class="menu-section">
+    <h2>اضافات</h2>
+
+    <div class="item"><div class="item-header"><div><div class="item-name">عجينة البر للمعجنات الكبيرة </div><div class="item-desc"></div></div><div><div class="item-price">2.30</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="حمص 14"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">عجينة البر للمعجنات الصغيرة </div><div class="item-desc"></div></div><div><div class="item-price">1.15</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="حمص 15"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">جبن</div><div class="item-desc"></div></div><div><div class="item-price">2.30</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="حمص 17"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">خضار</div><div class="item-desc"></div></div><div><div class="item-price">2.30</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="حمص 17"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">علبة كاتشب</div><div class="item-desc"></div></div><div><div class="item-price">2.30</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="حمص 17"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">علبة شطة </div><div class="item-desc"></div></div><div><div class="item-price">2.30</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="حمص 17"></div></div>
+    <div class="item"><div class="item-header"><div><div class="item-name">علبة طحينة</div><div class="item-desc"></div></div><div><div class="item-price">2.30</div><div class="item-currency"><img class="img-currency" src="./img/ريال سعودي - أبيض .png" alt=""></div></div></div><div class="item-image"><img src="./img/HERO.jpg" alt="حمص 17"></div></div>
+
+
+  </section>
+
+  <script>
+    // Overlay controls
+    function openOverlay() {
+      const ov = document.getElementById('overlayMenu');
+      ov.style.height = '100%';
+      ov.setAttribute('aria-hidden', 'false');
+    }
+    function closeOverlay() {
+      const ov = document.getElementById('overlayMenu');
+      ov.style.height = '0';
+      ov.setAttribute('aria-hidden', 'true');
+    }
+
+    // Collapse product image smoothly
+    document.querySelectorAll('.item').forEach(item => {
+      const imgWrap = item.querySelector('.item-image');
+      item.addEventListener('click', () => {
+        if (!imgWrap) return;
+        const isOpen = imgWrap.style.maxHeight && imgWrap.style.maxHeight !== '0px';
+        if (isOpen) {
+          imgWrap.style.maxHeight = '0px';
+        } else {
+          imgWrap.style.maxHeight = imgWrap.scrollHeight + 'px';
+        }
+      });
+    });
+
+    // Tabs: click + ScrollSpy
+    const tabs = document.querySelectorAll('.tab');
+    const sections = document.querySelectorAll('.menu-section');
+    const tabsContainer = document.getElementById('tabs');
+    let isClickNavigating = false;
+
+    function activateTab(tabEl) {
+      tabs.forEach(t => t.classList.remove('active'));
+      tabEl.classList.add('active');
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = tab.dataset.target;
+        const section = document.getElementById(target);
+        if (!section) return;
+        isClickNavigating = true;
+        activateTab(tab);
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => { isClickNavigating = false; }, 700);
+      });
+    });
+
+    const stickyOffset = (tabsContainer?.offsetHeight || 60) + 40;
+    const sectionToTab = {};
+    tabs.forEach(t => { sectionToTab[t.dataset.target] = t; });
+
+    const observer = new IntersectionObserver((entries) => {
+      if (isClickNavigating) return;
+      const visible = entries.filter(e => e.isIntersecting);
+      if (visible.length > 0) {
+        visible.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        const id = visible[0].target.id;
+        const tab = sectionToTab[id];
+        if (tab) activateTab(tab);
+      }
+    }, { root: null, rootMargin: `-${stickyOffset}px 0px -50% 0px`, threshold: [0, 0.25, 0.5, 0.75, 1] });
+
+    sections.forEach(section => observer.observe(section));
+  </script>
+
+
+
+
+
+<!-- Preloader HTML -->
+<div id="preloader" aria-hidden="false" role="status" aria-live="polite">
+  <div class="preloader-inner" role="presentation">
+    <div class="spinner" aria-hidden="true"></div>
+    <div class="preloader-text" id="preloaderText">جاري التحميل 0%</div>
+  </div>
+</div>
+
+<style>
+  /* Preloader styles */
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;800&display=swap');
+
+  #preloader{
+    position:fixed;
+    inset:0;
+    z-index:2000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: rgba(0,0,0,0.28);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: opacity .45s ease, visibility .45s ease;
+    opacity:1;
+    visibility:visible;
+    font-family: "Tajawal", sans-serif;
+  }
+
+  #preloader.hidden{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+  }
+
+  .preloader-inner{
+    text-align:center;
+    background: rgba(255,255,255,0.98);
+    padding:18px 22px;
+    border-radius:12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    min-width:220px;
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .spinner{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    border:4px solid rgba(88,34,34,0.12);
+    border-top-color: #582222;
+    animation: spin 1s linear infinite;
+    flex-shrink:0;
+  }
+  @keyframes spin{ to { transform: rotate(360deg); } }
+
+  .preloader-text{
+    font-weight:700;
+    color:#2b1b10;
+    font-size:14px;
+    min-width:110px;
+    text-align:left;
+  }
+
+  /* اختياري: اجعل المحتوى تحت Preloader غير قابل للتفاعل */
+  body.loading *:not(#preloader):not(#preloader *){ pointer-events:none; user-select:none; }
+
+  /* استجابة */
+  @media (max-width:420px){
+    .preloader-inner{padding:12px; gap:10px; min-width:180px}
+    .preloader-text{font-size:13px}
+    .spinner{width:36px;height:36px;border-width:3px}
+  }
+</style>
+
+<script>
+  (function(){
+    const preloader = document.getElementById('preloader');
+    const preloaderText = document.getElementById('preloaderText');
+    const MIN_SHOW_MS = 600; // أقل مدة عرض بالمللي ثانية لتفادي وميض سريع
+    const startTime = Date.now();
+
+    // Helper: hide preloader with fade
+    function hidePreloader(){
+      const elapsed = Date.now() - startTime;
+      const wait = Math.max(0, MIN_SHOW_MS - elapsed);
+      setTimeout(()=>{
+        preloader.classList.add('hidden');
+        preloader.setAttribute('aria-hidden','true');
+        document.body.classList.remove('loading');
+      }, wait);
+    }
+
+    // If there are images, track their loading progress
+    const imgs = Array.from(document.images);
+    if(imgs.length === 0){
+      // No images: wait for window load
+      window.addEventListener('load', hidePreloader);
+      // Fallback: also hide after a timeout (in case load never fires)
+      setTimeout(hidePreloader, 5000);
+    } else {
+      let loaded = 0;
+      const total = imgs.length;
+
+      function updateProgress(){
+        const pct = Math.round((loaded / total) * 100);
+        preloaderText.textContent = 'جاري التحميل ' + pct + '%';
+        if(loaded >= total){
+          // تأكد من أن النص وصل 100% قبل الإخفاء
+          preloaderText.textContent = 'جاري التحميل 100%';
+          hidePreloader();
+        }
+      }
+
+      imgs.forEach(img=>{
+        // If already complete (from cache)
+        if(img.complete){
+          loaded++;
+          updateProgress();
+        } else {
+          // Attach listeners
+          img.addEventListener('load', ()=>{
+            loaded++;
+            updateProgress();
+          }, {once:true});
+          img.addEventListener('error', ()=>{
+            // Treat error as loaded to avoid blocking
+            loaded++;
+            updateProgress();
+          }, {once:true});
+        }
+      });
+
+      // Safety timeout
+      setTimeout(()=>{ if(!preloader.classList.contains('hidden')) hidePreloader(); }, 7000);
+    }
+
+    // Prevent interaction while loading
+    document.body.classList.add('loading');
+  })();
+</script>
+</body>
+</html>
